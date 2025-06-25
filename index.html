@@ -1,0 +1,2045 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="NutriCit">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#059669">
+    
+    <title>🥬 NutriCit - App Unificata Sincronizzata</title>
+    
+    <!-- PWA Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%23059669'/><text x='90' y='120' font-size='80' text-anchor='middle' fill='white'>🥬</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23059669'/><text x='16' y='24' font-size='20' text-anchor='middle' fill='white'>🥬</text></svg>">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --vh: 1vh;
+            --primary-color: #059669;
+            --primary-dark: #047857;
+            --secondary-color: #f8fafc;
+            --accent-color: #3b82f6;
+            --danger-color: #dc2626;
+            --warning-color: #f59e0b;
+            --success-color: #10b981;
+        }
+        
+        * {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        html {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            height: 100%;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            line-height: 1.5;
+        }
+
+        /* Responsive Container */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh;
+            min-height: calc(var(--vh, 1vh) * 100);
+            background: white;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                max-width: 100%;
+                box-shadow: none;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .app-container {
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+                margin-top: 1rem;
+                margin-bottom: 1rem;
+                border-radius: 1rem;
+                overflow: hidden;
+            }
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: env(safe-area-inset-top, 1rem) 1rem 1rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            text-align: center;
+        }
+
+        @media (min-width: 769px) {
+            .app-title {
+                font-size: 2rem;
+                text-align: left;
+            }
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 1rem;
+            padding: 0.75rem;
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .user-details {
+            flex: 1;
+            margin-left: 0.75rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        /* Navigation Tabs (Desktop Admin) */
+        .nav-tabs-container {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0 1rem;
+            display: none;
+        }
+
+        @media (min-width: 769px) {
+            .nav-tabs-container {
+                display: block;
+            }
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .nav-tab {
+            padding: 1rem 0;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-tab:hover {
+            color: #374151;
+        }
+
+        .nav-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* Search */
+        .search-container {
+            padding: 1rem;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 1rem;
+            font-size: 1rem;
+            background: #f9fafb;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        /* Category Filter */
+        .category-filter {
+            padding: 0 1rem 1rem 1rem;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 0.5rem;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-tab {
+            flex-shrink: 0;
+            padding: 0.5rem 1rem;
+            border-radius: 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 2px solid #e5e7eb;
+            background: white;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .category-tab.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .category-tab:not(.active):hover {
+            border-color: #d1d5db;
+            background: #f9fafb;
+        }
+
+        /* Admin Controls */
+        .admin-controls {
+            padding: 1rem;
+            background: #fafbfc;
+            border-bottom: 1px solid #e5e7eb;
+            display: none;
+        }
+
+        .admin-controls.show {
+            display: block;
+        }
+
+        .btn-group-admin {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .btn-group-admin {
+                flex-direction: column;
+            }
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+            border: none;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #b91c1c 100%);
+            border: none;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+        }
+
+        /* Food List */
+        .food-list {
+            padding: 1rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .food-item {
+            background: white;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f1f5f9;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .food-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .food-header {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .food-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+            color: #1f2937;
+        }
+
+        .food-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .food-badges {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+        }
+
+        .food-actions {
+            display: none;
+            gap: 0.5rem;
+        }
+
+        .food-actions.show {
+            display: flex;
+        }
+
+        @media (max-width: 768px) {
+            .food-actions.show {
+                flex-direction: column;
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            border-radius: 0.5rem;
+            border: 1px solid;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-outline-warning {
+            color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+
+        .btn-outline-warning:hover {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn-outline-danger {
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .btn-outline-danger:hover {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .category-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid;
+        }
+
+        .badge-verdure { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+        .badge-frutta { background: #fed7aa; color: #9a3412; border-color: #fdba74; }
+        .badge-carne { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+        .badge-pesce { background: #dbeafe; color: #1e40af; border-color: #bfdbfe; }
+        .badge-latticini { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+        .badge-uova { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+        .badge-pane { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+        .badge-default { background: #f3f4f6; color: #374151; border-color: #e5e7eb; }
+
+        .temp-indicator {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .food-content {
+            padding: 1rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .info-card {
+            background: #f8fafc;
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            margin: 0 0 0.25rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .info-value {
+            font-size: 0.875rem;
+            color: #1e293b;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .expand-button {
+            width: 100%;
+            padding: 0.75rem;
+            background: #f8fafc;
+            border: none;
+            border-top: 1px solid #e2e8f0;
+            color: var(--primary-color);
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .expand-button:hover {
+            background: #f1f5f9;
+        }
+
+        .detailed-info {
+            padding: 1rem;
+            border-top: 1px solid #e2e8f0;
+            background: #fafbfc;
+        }
+
+        /* Edit Form */
+        .edit-form {
+            padding: 1rem;
+            background: #f0f9ff;
+            border-top: 1px solid #e0f2fe;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            min-height: calc(var(--vh, 1vh) * 100);
+            padding: 2rem 1rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-subtitle {
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .login-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(5, 150, 105, 0.3);
+        }
+
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-online {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-offline {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        /* Sync Status */
+        .sync-status {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: white;
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .sync-status.syncing {
+            background: #fef3c7;
+            border-color: #fde68a;
+            color: #92400e;
+        }
+
+        .sync-status.synced {
+            background: #dcfce7;
+            border-color: #bbf7d0;
+            color: #166534;
+        }
+
+        .sync-status.error {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 2px solid #e5e7eb;
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6b7280;
+        }
+
+        .no-results-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Add Form */
+        .add-form {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin: 1rem;
+        }
+
+        /* Client Management */
+        .client-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: white;
+        }
+
+        /* Sync Notice */
+        .sync-notice {
+            background: #f0f9ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .sync-notice h4 {
+            color: #1e40af;
+            margin: 0 0 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .sync-notice p {
+            margin: 0;
+            font-size: 0.875rem;
+            color: #1e40af;
+        }
+
+        /* iOS Safari specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            .app-container {
+                min-height: -webkit-fill-available;
+            }
+            
+            .login-container {
+                min-height: -webkit-fill-available;
+            }
+            
+            .form-control, .form-select, .search-input {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+            }
+            
+            button {
+                -webkit-appearance: none;
+                cursor: pointer;
+                -webkit-user-select: none;
+                user-select: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // ==================== DATI DEGLI ALIMENTI CENTRALIZZATI ====================
+        const STORAGE_KEY = 'nutriCitAppData';
+        const CLIENTS_KEY = 'nutriCitClients'; // CHIAVE CONDIVISA per sincronizzazione clienti
+        const SYNC_KEY = 'nutriCitLastSync';
+
+        const initialFoodData = [
+            { 
+                id: 1, 
+                categoria: "Verdure", 
+                nome: "Aglio fresco", 
+                produzione: "Bulbo sotterraneo, raccolto a fine primavera", 
+                temperatura: "0-4°C (frigo), 10-15°C (secco)", 
+                frigoFuori: "Frigo o fuori frigo", 
+                posizionefrigo: "Cassetto verdura (fresco) / Dispensa asciutta e ventilata (secco)", 
+                durata: "1 mese (frigo), 2-3 mesi (secco)", 
+                qualita: "Bulbo sodo, tunica integra, senza germogli",
+                conservazioneIdeale: "Ambiente in sacchetto carta, frigorifero solo per brevi periodi"
+            },
+            { 
+                id: 2, 
+                categoria: "Verdure", 
+                nome: "Carote", 
+                produzione: "Radice, raccolta a maturazione", 
+                temperatura: "0-4°C", 
+                frigoFuori: "Frigo", 
+                posizionefrigo: "Cassetto verdura", 
+                durata: "2-3 settimane (frigo)", 
+                qualita: "Colore arancione vivo, radice soda, senza spaccature",
+                conservazioneIdeale: "Frigorifero, rimuovere foglie verdi, in sacchetto perforato"
+            },
+            { 
+                id: 3, 
+                categoria: "Verdure", 
+                nome: "Pomodori", 
+                produzione: "Pianta annuale, raccolta a maturazione", 
+                temperatura: "10-15°C", 
+                frigoFuori: "Fuori frigo (meglio)", 
+                posizionefrigo: "Ambiente temperatura ambiente, lontano dal sole diretto", 
+                durata: "3-5 giorni (fuori frigo), 4-7 giorni (frigo)", 
+                qualita: "Colore uniforme, polpa soda, senza ammaccature",
+                conservazioneIdeale: "Temperatura ambiente finché maturi, frigorifero solo se molto maturi"
+            },
+            { 
+                id: 4, 
+                categoria: "Verdure", 
+                nome: "Zucchine verdi", 
+                produzione: "Frutto, raccolta manuale", 
+                temperatura: "7-10°C", 
+                frigoFuori: "Frigo", 
+                posizionefrigo: "Ripiano medio o cassetto verdura", 
+                durata: "4-7 giorni (frigo)", 
+                qualita: "Buccia lucida, soda, senza ammaccature",
+                conservazioneIdeale: "Frigorifero in sacchetto perforato"
+            },
+            { 
+                id: 5, 
+                categoria: "Verdure", 
+                nome: "Patate", 
+                produzione: "Pianta erbacea, raccolta tuberi maturi", 
+                temperatura: "8-10°C", 
+                frigoFuori: "Fuori frigo", 
+                posizionefrigo: "Dispensa fresca, asciutta e buia (8-15°C)", 
+                durata: "1-10 mesi (a seconda varietà)", 
+                qualita: "Tuberi sodi, senza germogli o macchie verdi",
+                conservazioneIdeale: "Dispensa buia e ventilata, in cassette di legno o sacchi di juta"
+            },
+            { 
+                id: 55, 
+                categoria: "Frutta", 
+                nome: "Mele", 
+                produzione: "Albero, raccolta manuale a maturazione", 
+                temperatura: "0-4°C", 
+                frigoFuori: "Frigo", 
+                posizionefrigo: "Cassetto frutta", 
+                durata: "1-12 mesi (frigo), 1-2 settimane fuori frigo", 
+                qualita: "Buccia liscia, soda, senza ammaccature",
+                conservazioneIdeale: "Frigorifero, separare da altri frutti (producono etilene)"
+            },
+            { 
+                id: 56, 
+                categoria: "Frutta", 
+                nome: "Banane", 
+                produzione: "Pianta erbacea, raccolta verde", 
+                temperatura: "13-15°C", 
+                frigoFuori: "Fuori frigo", 
+                posizionefrigo: "Ambiente temperatura ambiente, lontano da altri frutti", 
+                durata: "2-3 giorni (frigo, annerisce), 3-7 giorni fuori frigo", 
+                qualita: "Buccia liscia, senza macchie scure, frutto sodo",
+                conservazioneIdeale: "Temperatura ambiente, appendere al gancio per banane"
+            },
+            { 
+                id: 57, 
+                categoria: "Frutta", 
+                nome: "Arance", 
+                produzione: "Albero, raccolta manuale", 
+                temperatura: "4-8°C", 
+                frigoFuori: "Frigo", 
+                posizionefrigo: "Cassetto frutta o ripiano medio", 
+                durata: "2-3 settimane (frigo), 1 settimana fuori frigo", 
+                qualita: "Buccia soda, pesante, senza ammaccature",
+                conservazioneIdeale: "Frigorifero o fruttivendolo fresco e ventilato"
+            },
+            { 
+                id: 58, 
+                categoria: "Frutta", 
+                nome: "Fragole", 
+                produzione: "Pianta erbacea, raccolta manuale", 
+                temperatura: "0-2°C", 
+                frigoFuori: "Frigo", 
+                posizionefrigo: "Ripiano superiore o cassetto frutta", 
+                durata: "3-7 giorni (frigo)", 
+                qualita: "Colore rosso vivo, polpa soda, senza muffa o ammaccature",
+                conservazioneIdeale: "Frigorifero in contenitore aperto, non sovrapposte"
+            },
+            { 
+                id: 59, 
+                categoria: "Frutta", 
+                nome: "Uva", 
+                produzione: "Pianta rampicante, raccolta manuale", 
+                temperatura: "0-2°C", 
+                frigoFuori: "Frigo", 
+                posizionefrigo: "Cassetto frutta o ripiano superiore", 
+                durata: "2-4 settimane (frigo)", 
+                qualita: "Acini sodi, buccia tesa, senza muffa",
+                conservazioneIdeale: "Frigorifero in sacchetto perforato"
+            },
+            { 
+                id: 95, 
+                categoria: "Carne", 
+                nome: "Carne bovina fresca", 
+                produzione: "Allevamento bovino, macellazione", 
+                temperatura: "+3/+4°C", 
+                frigoFuori: "Frigo", 
+                posizionefrigo: "Ripiano inferiore (più freddo)", 
+                durata: "2-3 giorni (frigo)", 
+                qualita: "Colore rosso vivo, senza odore sgradevole",
+                conservazioneIdeale: "Frigorifero ripiano inferiore, in contenitore chiuso"
+            },
+            { 
+                id: 98, 
+                categoria: "Pesce", 
+                nome: "Pesce fresco", 
+                produzione: "Pesca marina o di acqua dolce", 
+                temperatura: "+1/+2°C", 
+                frigoFuori: "Frigo", 
+                posizionefrigo: "Ripiano inferiore o cassetto pesce", 
+                durata: "1-2 giorni (frigo)", 
+                qualita: "Occhi chiari, carne soda, odore di mare fresco",
+                conservazioneIdeale: "Frigorifero ripiano inferiore, su ghiaccio se possibile"
+            },
+            { 
+                id: 99, 
+                categoria: "Latticini", 
+                nome: "Formaggi freschi", 
+                produzione: "Lavorazione latte", 
+                temperatura: "+4/+5°C", 
+                frigoFuori: "Frigo", 
+                posizionefrigo: "Ripiano centrale o inferiore", 
+                durata: "3-5 giorni (frigo)", 
+                qualita: "Aspetto compatto, senza muffe o odori sgradevoli",
+                conservazioneIdeale: "Frigorifero in contenitore ermetico"
+            },
+            { 
+                id: 102, 
+                categoria: "Uova", 
+                nome: "Uova fresche", 
+                produzione: "Allevamento avicolo", 
+                temperatura: "+4/+5°C", 
+                frigoFuori: "Frigo", 
+                posizionefrigo: "Ripiano centrale o porta frigo", 
+                durata: "3-4 settimane (frigo)", 
+                qualita: "Guscio integro, pulito, senza crepe",
+                conservazioneIdeale: "Frigorifero nella confezione originale"
+            },
+            { 
+                id: 107, 
+                categoria: "Pane", 
+                nome: "Pane fresco", 
+                produzione: "Panificazione", 
+                temperatura: "18-20°C", 
+                frigoFuori: "Fuori frigo", 
+                posizionefrigo: "Ambiente in sacchetto di carta o cassetto pane", 
+                durata: "2-3 giorni (ambiente), 5-7 giorni (frigo)", 
+                qualita: "Crosta croccante, senza muffe o odori",
+                conservazioneIdeale: "Ambiente in sacchetto di carta, evitare plastica"
+            }
+        ];
+
+        // ==================== STATE MANAGEMENT ====================
+        let state = {
+            isLoggedIn: false,
+            currentUser: null,
+            isOnline: navigator.onLine,
+            isMobile: window.innerWidth <= 768,
+            searchTerm: '',
+            selectedCategory: 'Tutte',
+            expandedItems: new Set(),
+            editingId: null,
+            editForm: {},
+            showAddForm: false,
+            activeTab: 'alimenti',
+            loginForm: { nome: '', cognome: '' },
+            loginError: '',
+            foodData: [],
+            clients: [], // SINCRONIZZATO tra tutti i dispositivi
+            syncStatus: 'idle',
+            lastSync: null,
+            newFood: {
+                nome: '',
+                categoria: 'Verdure',
+                produzione: '',
+                temperatura: '',
+                frigoFuori: 'Frigo',
+                posizionefrigo: '',
+                durata: '',
+                qualita: '',
+                conservazioneIdeale: ''
+            },
+            newClient: { nome: '', cognome: '' },
+            showAddClientForm: false
+        };
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+
+        function isAdmin(user) {
+            if (!user) return false;
+            const fullName = `${user.nome} ${user.cognome}`.toLowerCase().trim();
+            return fullName === 'marius simiras';
+        }
+
+        function isAuthorizedClient(user) {
+            if (!user) return false;
+            if (isAdmin(user)) return true;
+            
+            const fullName = `${user.nome} ${user.cognome}`.toLowerCase().trim();
+            return state.clients.some(client => 
+                `${client.nome} ${client.cognome}`.toLowerCase().trim() === fullName
+            );
+        }
+
+        function getCategoryBadgeClass(categoria) {
+            const classes = {
+                'Verdure': 'badge-verdure',
+                'Frutta': 'badge-frutta',
+                'Carne': 'badge-carne',
+                'Pesce': 'badge-pesce',
+                'Latticini': 'badge-latticini',
+                'Uova': 'badge-uova',
+                'Pane': 'badge-pane'
+            };
+            return classes[categoria] || 'badge-default';
+        }
+
+        function getTemperatureIcon(frigoFuori) {
+            if (frigoFuori.includes('Frigo')) return '❄️';
+            if (frigoFuori.includes('Fuori')) return '🌡️';
+            if (frigoFuori.includes('Freezer')) return '🧊';
+            return '🔄';
+        }
+
+        function getCategories() {
+            const cats = new Set(state.foodData.map(item => item.categoria));
+            return ['Tutte', ...Array.from(cats)];
+        }
+
+        function getFilteredFoods() {
+            return state.foodData.filter(item => {
+                const matchesSearch = item.nome.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
+                                     item.categoria.toLowerCase().includes(state.searchTerm.toLowerCase());
+                const matchesCategory = state.selectedCategory === 'Tutte' || item.categoria === state.selectedCategory;
+                return matchesSearch && matchesCategory;
+            });
+        }
+
+        // ==================== SINCRONIZZAZIONE CLIENTI ====================
+        function loadClients() {
+            try {
+                const savedClients = localStorage.getItem(CLIENTS_KEY);
+                if (savedClients) {
+                    state.clients = JSON.parse(savedClients);
+                    console.log('✅ Clienti caricati e sincronizzati:', state.clients.length);
+                } else {
+                    state.clients = [];
+                }
+                return true;
+            } catch (error) {
+                console.error('❌ Errore caricamento clienti:', error);
+                state.clients = [];
+                return false;
+            }
+        }
+
+        function saveClients() {
+            try {
+                localStorage.setItem(CLIENTS_KEY, JSON.stringify(state.clients));
+                console.log('✅ Clienti salvati e sincronizzati:', state.clients.length);
+                
+                // Trigger sync automatico dopo salvataggio clienti
+                triggerClientSync();
+                return true;
+            } catch (error) {
+                console.error('❌ Errore salvataggio clienti:', error);
+                return false;
+            }
+        }
+
+        function triggerClientSync() {
+            // Simula sincronizzazione cross-device (in una app reale, userebbe un backend)
+            state.syncStatus = 'syncing';
+            render();
+            
+            setTimeout(() => {
+                state.syncStatus = 'synced';
+                const now = new Date();
+                state.lastSync = now;
+                localStorage.setItem(SYNC_KEY, now.toISOString());
+                
+                setTimeout(() => {
+                    state.syncStatus = 'idle';
+                    render();
+                }, 3000);
+                
+                render();
+            }, 1500);
+        }
+
+        // ==================== DATA MANAGEMENT ====================
+        function saveData() {
+            try {
+                const dataToSave = {
+                    foodData: state.foodData,
+                    lastModified: new Date().toISOString(),
+                    version: '1.0'
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+                syncData();
+                console.log('✅ Dati alimenti salvati');
+                return true;
+            } catch (error) {
+                console.error('❌ Errore salvataggio dati:', error);
+                state.syncStatus = 'error';
+                render();
+                return false;
+            }
+        }
+
+        function loadData() {
+            try {
+                const savedData = localStorage.getItem(STORAGE_KEY);
+                if (savedData) {
+                    const parsed = JSON.parse(savedData);
+                    state.foodData = parsed.foodData || [...initialFoodData];
+                } else {
+                    state.foodData = [...initialFoodData];
+                    saveData();
+                }
+                
+                const lastSync = localStorage.getItem(SYNC_KEY);
+                if (lastSync) {
+                    state.lastSync = new Date(lastSync);
+                }
+                
+                console.log('✅ Dati alimenti caricati');
+                return true;
+            } catch (error) {
+                console.error('❌ Errore caricamento dati:', error);
+                state.foodData = [...initialFoodData];
+                return false;
+            }
+        }
+
+        async function syncData() {
+            if (!state.isOnline) return;
+            
+            state.syncStatus = 'syncing';
+            render();
+            
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                const now = new Date();
+                state.lastSync = now;
+                localStorage.setItem(SYNC_KEY, now.toISOString());
+                state.syncStatus = 'synced';
+                
+                setTimeout(() => {
+                    state.syncStatus = 'idle';
+                    render();
+                }, 3000);
+                
+                render();
+                console.log('✅ Sincronizzazione completata');
+            } catch (error) {
+                console.error('❌ Errore sincronizzazione:', error);
+                state.syncStatus = 'error';
+                render();
+            }
+        }
+
+        // ==================== EVENT HANDLERS ====================
+        function handleLogin() {
+            const nome = state.loginForm.nome.trim();
+            const cognome = state.loginForm.cognome.trim();
+            
+            if (!nome || !cognome) {
+                state.loginError = 'Inserisci nome e cognome';
+                render();
+                return;
+            }
+            
+            const userData = {
+                nome: nome,
+                cognome: cognome,
+                id: `${nome}_${cognome}`.toLowerCase().replace(/\s+/g, '_'),
+                loginDate: new Date().toISOString()
+            };
+            
+            if (!isAuthorizedClient(userData)) {
+                state.loginError = 'Accesso negato. Non sei un cliente autorizzato.';
+                render();
+                return;
+            }
+            
+            localStorage.setItem('nutriCitUser', JSON.stringify(userData));
+            state.currentUser = userData;
+            state.isLoggedIn = true;
+            state.loginForm = { nome: '', cognome: '' };
+            state.loginError = '';
+            
+            loadData();
+            
+            if (state.isOnline) {
+                syncData();
+            }
+            
+            render();
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('nutriCitUser');
+            state.currentUser = null;
+            state.isLoggedIn = false;
+            state.searchTerm = '';
+            state.selectedCategory = 'Tutte';
+            state.expandedItems.clear();
+            state.editingId = null;
+            state.showAddForm = false;
+            state.activeTab = 'alimenti';
+            render();
+        }
+
+        function handleSearch(value) {
+            state.searchTerm = value;
+            render();
+        }
+
+        function handleCategoryChange(category) {
+            state.selectedCategory = category;
+            render();
+        }
+
+        function toggleExpanded(id) {
+            if (state.expandedItems.has(id)) {
+                state.expandedItems.delete(id);
+            } else {
+                state.expandedItems.add(id);
+            }
+            render();
+        }
+
+        function startEdit(item) {
+            state.editingId = item.id;
+            state.editForm = { ...item };
+            render();
+        }
+
+        function cancelEdit() {
+            state.editingId = null;
+            state.editForm = {};
+            render();
+        }
+
+        function saveEdit() {
+            if (!state.editForm.nome || !state.editForm.categoria) {
+                alert('Nome e categoria sono obbligatori');
+                return;
+            }
+            
+            state.foodData = state.foodData.map(item => 
+                item.id === state.editingId ? { ...state.editForm } : item
+            );
+            state.editingId = null;
+            state.editForm = {};
+            saveData();
+            render();
+        }
+
+        function addNewFood() {
+            if (!state.newFood.nome || !state.newFood.categoria) {
+                alert('Nome e categoria sono obbligatori');
+                return;
+            }
+            
+            const newId = Math.max(...state.foodData.map(item => item.id), 0) + 1;
+            state.foodData.push({ ...state.newFood, id: newId });
+            state.newFood = {
+                nome: '',
+                categoria: 'Verdure',
+                produzione: '',
+                temperatura: '',
+                frigoFuori: 'Frigo',
+                posizionefrigo: '',
+                durata: '',
+                qualita: '',
+                conservazioneIdeale: ''
+            };
+            state.showAddForm = false;
+            saveData();
+            render();
+        }
+
+        function deleteFood(id) {
+            if (confirm('Sei sicuro di voler eliminare questo alimento?')) {
+                state.foodData = state.foodData.filter(item => item.id !== id);
+                saveData();
+                render();
+            }
+        }
+
+        function addClient() {
+            const nome = state.newClient.nome.trim();
+            const cognome = state.newClient.cognome.trim();
+            
+            if (nome && cognome) {
+                const newClientObj = {
+                    id: Date.now(),
+                    nome: nome,
+                    cognome: cognome,
+                    addedDate: new Date().toISOString()
+                };
+                
+                state.clients.push(newClientObj);
+                saveClients(); // ⭐ Ora si sincronizza automaticamente!
+                state.newClient = { nome: '', cognome: '' };
+                state.showAddClientForm = false;
+                render();
+            }
+        }
+
+        function removeClient(clientId) {
+            if (confirm('Sei sicuro di voler rimuovere questo cliente?')) {
+                state.clients = state.clients.filter(client => client.id !== clientId);
+                saveClients(); // ⭐ Sincronizzazione automatica!
+                render();
+            }
+        }
+
+        function resetData() {
+            if (confirm('Sei sicuro di voler ripristinare tutti i dati originali? Questa azione non può essere annullata.')) {
+                state.foodData = [...initialFoodData];
+                saveData();
+                render();
+            }
+        }
+
+        // ==================== RENDER FUNCTIONS ====================
+        function renderLoginScreen() {
+            return `
+                <div class="login-container">
+                    <div class="login-card">
+                        <div class="login-header">
+                            <h1 class="login-title">🥬 NutriCit</h1>
+                            <p class="login-subtitle">Guida sincronizzata per la conservazione degli alimenti</p>
+                        </div>
+
+                        ${state.loginError ? `
+                            <div class="error-message">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                ${state.loginError}
+                            </div>
+                        ` : ''}
+
+                        <form onsubmit="event.preventDefault(); handleLogin();">
+                            <div class="form-group">
+                                <label class="form-label">Nome</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Il tuo nome"
+                                    value="${state.loginForm.nome}"
+                                    onchange="state.loginForm.nome = this.value"
+                                    required
+                                />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Cognome</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Il tuo cognome"
+                                    value="${state.loginForm.cognome}"
+                                    onchange="state.loginForm.cognome = this.value"
+                                    required
+                                />
+                            </div>
+
+                            <button type="submit" class="login-button">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                Accedi all'App
+                            </button>
+                        </form>
+
+                        <div class="login-footer">
+                            <p>💚 App sincronizzata PC + Mobile</p>
+                            <div class="status-badge ${state.isOnline ? 'status-online' : 'status-offline'}">
+                                ${state.isOnline ? '📶 Online' : '📵 Offline'}
+                            </div>
+                            <p style="margin-top: 1rem; font-size: 0.75rem;">✅ Clienti sincronizzati automaticamente tra dispositivi</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAppHeader() {
+            return `
+                <div class="app-header">
+                    <h1 class="app-title">🥬 NutriCit ${state.isMobile ? '' : '- App Sincronizzata'}</h1>
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            ${state.currentUser?.nome?.charAt(0)?.toUpperCase() || '👤'}
+                        </div>
+                        <div class="user-details">
+                            <p class="user-name">
+                                ${state.currentUser?.nome} ${state.currentUser?.cognome}
+                                ${isAdmin(state.currentUser) ? '<span class="admin-badge">👑 ADMIN</span>' : ''}
+                            </p>
+                            <p class="user-role">
+                                ${isAdmin(state.currentUser) ? 'Amministratore' : 'Cliente autorizzato'}
+                                ${state.lastSync ? ` • Ultimo aggiornamento: ${state.lastSync.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}` : ''}
+                            </p>
+                        </div>
+                        <button onclick="handleLogout()" class="btn btn-sm" style="background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 0.5rem;">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderNavTabs() {
+            if (!isAdmin(state.currentUser) || state.isMobile) return '';
+            
+            return `
+                <div class="nav-tabs-container">
+                    <ul class="nav-tabs">
+                        <li class="nav-tab ${state.activeTab === 'alimenti' ? 'active' : ''}" onclick="state.activeTab = 'alimenti'; render()">
+                            🥬 Gestione Alimenti
+                        </li>
+                        <li class="nav-tab ${state.activeTab === 'clienti' ? 'active' : ''}" onclick="state.activeTab = 'clienti'; render()">
+                            👥 Gestione Clienti
+                        </li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        function renderSearch() {
+            if (state.activeTab !== 'alimenti') return '';
+            
+            return `
+                <div class="search-container">
+                    <div class="search-box">
+                        <i class="bi bi-search search-icon"></i>
+                        <input
+                            type="text"
+                            class="search-input"
+                            placeholder="Cerca un alimento..."
+                            value="${state.searchTerm}"
+                            oninput="handleSearch(this.value)"
+                        />
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCategoryFilter() {
+            if (state.activeTab !== 'alimenti') return '';
+            
+            const categories = getCategories();
+            
+            return `
+                <div class="category-filter">
+                    <div class="category-tabs">
+                        ${categories.map(category => `
+                            <button
+                                class="category-tab ${state.selectedCategory === category ? 'active' : ''}"
+                                onclick="handleCategoryChange('${category}')"
+                            >
+                                ${category}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdminControls() {
+            if (!isAdmin(state.currentUser) || state.activeTab !== 'alimenti') return '';
+            
+            return `
+                <div class="admin-controls show">
+                    <div class="btn-group-admin">
+                        <button onclick="state.showAddForm = !state.showAddForm; render()" class="btn btn-success">
+                            <i class="bi bi-plus"></i> ${state.showAddForm ? 'Nascondi Form' : 'Aggiungi Alimento'}
+                        </button>
+                        <button onclick="resetData()" class="btn btn-danger">
+                            <i class="bi bi-arrow-clockwise"></i> Ripristina Dati Originali
+                        </button>
+                        <button onclick="syncData()" class="btn btn-primary">
+                            <i class="bi bi-cloud-arrow-up"></i> Sincronizza Ora
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAddForm() {
+            if (!state.showAddForm || state.activeTab !== 'alimenti' || !isAdmin(state.currentUser)) return '';
+            
+            return `
+                <div class="add-form">
+                    <h3 style="margin-bottom: 1rem; color: var(--success-color);">➕ Aggiungi Nuovo Alimento</h3>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Nome alimento *</label>
+                            <input type="text" class="form-control" placeholder="es. Mele Golden"
+                                   value="${state.newFood.nome}"
+                                   onchange="state.newFood.nome = this.value" required />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Categoria *</label>
+                            <select class="form-select" onchange="state.newFood.categoria = this.value">
+                                <option value="Verdure" ${state.newFood.categoria === 'Verdure' ? 'selected' : ''}>🥬 Verdure</option>
+                                <option value="Frutta" ${state.newFood.categoria === 'Frutta' ? 'selected' : ''}>🍎 Frutta</option>
+                                <option value="Carne" ${state.newFood.categoria === 'Carne' ? 'selected' : ''}>🥩 Carne</option>
+                                <option value="Pesce" ${state.newFood.categoria === 'Pesce' ? 'selected' : ''}>🐟 Pesce</option>
+                                <option value="Latticini" ${state.newFood.categoria === 'Latticini' ? 'selected' : ''}>🧀 Latticini</option>
+                                <option value="Uova" ${state.newFood.categoria === 'Uova' ? 'selected' : ''}>🥚 Uova</option>
+                                <option value="Pane" ${state.newFood.categoria === 'Pane' ? 'selected' : ''}>🍞 Pane</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Temperatura</label>
+                            <input type="text" class="form-control" placeholder="es. 0-4°C"
+                                   value="${state.newFood.temperatura}"
+                                   onchange="state.newFood.temperatura = this.value" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Dove conservare</label>
+                            <select class="form-select" onchange="state.newFood.frigoFuori = this.value">
+                                <option value="Frigo" ${state.newFood.frigoFuori === 'Frigo' ? 'selected' : ''}>❄️ Frigo</option>
+                                <option value="Fuori frigo" ${state.newFood.frigoFuori === 'Fuori frigo' ? 'selected' : ''}>🌡️ Fuori frigo</option>
+                                <option value="Freezer" ${state.newFood.frigoFuori === 'Freezer' ? 'selected' : ''}>🧊 Freezer</option>
+                                <option value="Frigo o fuori frigo" ${state.newFood.frigoFuori === 'Frigo o fuori frigo' ? 'selected' : ''}>🔄 Frigo o fuori frigo</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Durata conservazione</label>
+                            <input type="text" class="form-control" placeholder="es. 2-3 settimane"
+                                   value="${state.newFood.durata}"
+                                   onchange="state.newFood.durata = this.value" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Produzione</label>
+                            <input type="text" class="form-control" placeholder="es. Raccolta manuale"
+                                   value="${state.newFood.produzione}"
+                                   onchange="state.newFood.produzione = this.value" />
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Posizione specifica</label>
+                        <input type="text" class="form-control" placeholder="es. Cassetto verdura, ripiano centrale"
+                               value="${state.newFood.posizionefrigo}"
+                               onchange="state.newFood.posizionefrigo = this.value" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Indicatori di qualità</label>
+                        <textarea class="form-control" placeholder="es. Buccia liscia, soda, senza ammaccature"
+                                  onchange="state.newFood.qualita = this.value">${state.newFood.qualita}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Conservazione ideale</label>
+                        <textarea class="form-control" placeholder="es. Frigorifero, separare da altri frutti"
+                                  onchange="state.newFood.conservazioneIdeale = this.value">${state.newFood.conservazioneIdeale}</textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button onclick="addNewFood()" class="btn btn-success">
+                            💾 Salva Alimento
+                        </button>
+                        <button onclick="state.showAddForm = false; render()" class="btn btn-danger">
+                            ❌ Annulla
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFoodItem(item) {
+            const isExpanded = state.expandedItems.has(item.id);
+            const isEditing = state.editingId === item.id;
+            
+            if (isEditing) {
+                return renderEditForm(item);
+            }
+            
+            const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
+            
+            return `
+                <div class="food-item">
+                    <div class="food-header">
+                        <h3 class="food-title">${item.nome}</h3>
+                        <div class="food-meta">
+                            <div class="food-badges">
+                                <span class="category-badge ${getCategoryBadgeClass(item.categoria)}">${item.categoria}</span>
+                                <span class="temp-indicator">${getTemperatureIcon(item.frigoFuori)}</span>
+                            </div>
+                            <div class="food-actions ${isAdmin(state.currentUser) ? 'show' : ''}">
+                                <button onclick='startEdit(${itemJson})' class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-pencil"></i> ${state.isMobile ? 'Modifica' : 'Modifica'}
+                                </button>
+                                <button onclick="deleteFood(${item.id})" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i> ${state.isMobile ? 'Elimina' : 'Elimina'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="food-content">
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <p class="info-label">🌡️ Temperatura</p>
+                                <p class="info-value">${item.temperatura}</p>
+                            </div>
+                            <div class="info-card">
+                                <p class="info-label">📍 Conservazione</p>
+                                <p class="info-value">${item.frigoFuori}</p>
+                            </div>
+                            <div class="info-card">
+                                <p class="info-label">⏰ Durata</p>
+                                <p class="info-value">${item.durata}</p>
+                            </div>
+                            <div class="info-card">
+                                <p class="info-label">✨ Qualità</p>
+                                <p class="info-value">${item.qualita}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="expand-button" onclick="toggleExpanded(${item.id})">
+                        <i class="bi bi-chevron-${isExpanded ? 'up' : 'down'}"></i>
+                        ${isExpanded ? 'Nascondi dettagli' : 'Mostra tutti i dettagli'}
+                    </button>
+                    
+                    ${isExpanded ? `
+                        <div class="detailed-info">
+                            <div class="info-grid">
+                                <div class="info-card">
+                                    <p class="info-label">🌱 Produzione</p>
+                                    <p class="info-value">${item.produzione}</p>
+                                </div>
+                                <div class="info-card">
+                                    <p class="info-label">🏠 Posizione specifica</p>
+                                    <p class="info-value">${item.posizionefrigo}</p>
+                                </div>
+                                <div class="info-card">
+                                    <p class="info-label">💡 Conservazione ideale</p>
+                                    <p class="info-value">${item.conservazioneIdeale}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function renderEditForm(item) {
+            return `
+                <div class="food-item">
+                    <div class="edit-form">
+                        <h3 style="margin-bottom: 1rem; color: var(--accent-color);">✏️ Modifica Alimento</h3>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Nome alimento *</label>
+                                <input type="text" class="form-control"
+                                       value="${state.editForm.nome || ''}"
+                                       onchange="state.editForm.nome = this.value" required />
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Categoria *</label>
+                                <select class="form-select" onchange="state.editForm.categoria = this.value">
+                                    <option value="Verdure" ${state.editForm.categoria === 'Verdure' ? 'selected' : ''}>🥬 Verdure</option>
+                                    <option value="Frutta" ${state.editForm.categoria === 'Frutta' ? 'selected' : ''}>🍎 Frutta</option>
+                                    <option value="Carne" ${state.editForm.categoria === 'Carne' ? 'selected' : ''}>🥩 Carne</option>
+                                    <option value="Pesce" ${state.editForm.categoria === 'Pesce' ? 'selected' : ''}>🐟 Pesce</option>
+                                    <option value="Latticini" ${state.editForm.categoria === 'Latticini' ? 'selected' : ''}>🧀 Latticini</option>
+                                    <option value="Uova" ${state.editForm.categoria === 'Uova' ? 'selected' : ''}>🥚 Uova</option>
+                                    <option value="Pane" ${state.editForm.categoria === 'Pane' ? 'selected' : ''}>🍞 Pane</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Temperatura</label>
+                                <input type="text" class="form-control"
+                                       value="${state.editForm.temperatura || ''}"
+                                       onchange="state.editForm.temperatura = this.value" />
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Dove conservare</label>
+                                <select class="form-select" onchange="state.editForm.frigoFuori = this.value">
+                                    <option value="Frigo" ${state.editForm.frigoFuori === 'Frigo' ? 'selected' : ''}>❄️ Frigo</option>
+                                    <option value="Fuori frigo" ${state.editForm.frigoFuori === 'Fuori frigo' ? 'selected' : ''}>🌡️ Fuori frigo</option>
+                                    <option value="Freezer" ${state.editForm.frigoFuori === 'Freezer' ? 'selected' : ''}>🧊 Freezer</option>
+                                    <option value="Frigo o fuori frigo" ${state.editForm.frigoFuori === 'Frigo o fuori frigo' ? 'selected' : ''}>🔄 Frigo o fuori frigo</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Durata conservazione</label>
+                                <input type="text" class="form-control"
+                                       value="${state.editForm.durata || ''}"
+                                       onchange="state.editForm.durata = this.value" />
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Produzione</label>
+                                <input type="text" class="form-control"
+                                       value="${state.editForm.produzione || ''}"
+                                       onchange="state.editForm.produzione = this.value" />
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Posizione specifica</label>
+                            <input type="text" class="form-control"
+                                   value="${state.editForm.posizionefrigo || ''}"
+                                   onchange="state.editForm.posizionefrigo = this.value" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Indicatori di qualità</label>
+                            <textarea class="form-control"
+                                      onchange="state.editForm.qualita = this.value">${state.editForm.qualita || ''}</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Conservazione ideale</label>
+                            <textarea class="form-control"
+                                      onchange="state.editForm.conservazioneIdeale = this.value">${state.editForm.conservazioneIdeale || ''}</textarea>
+                        </div>
+                        
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button onclick="saveEdit()" class="btn btn-primary">
+                                💾 Salva Modifiche
+                            </button>
+                            <button onclick="cancelEdit()" class="btn btn-danger">
+                                ❌ Annulla
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFoodList() {
+            if (state.activeTab !== 'alimenti') return '';
+            
+            const filteredFoods = getFilteredFoods();
+            
+            if (filteredFoods.length === 0) {
+                return `
+                    <div class="no-results">
+                        <div class="no-results-icon">🔍</div>
+                        <h3>Nessun alimento trovato</h3>
+                        <p>Prova a modificare i criteri di ricerca</p>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="food-list">
+                    ${filteredFoods.map(item => renderFoodItem(item)).join('')}
+                </div>
+            `;
+        }
+
+        function renderClientManagement() {
+            if (!isAdmin(state.currentUser) || state.activeTab !== 'clienti') return '';
+            
+            return `
+                <div style="padding: 1rem;">
+                    <div style="background: white; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);">
+                        <h2 style="margin-bottom: 1.5rem; color: var(--primary-color);">👥 Gestione Clienti</h2>
+                        
+                        <div class="sync-notice">
+                            <h4>🔄 Sincronizzazione Clienti</h4>
+                            <p>I clienti aggiunti qui sono <strong>sincronizzati automaticamente</strong> su tutti i dispositivi (PC e mobile). Appena aggiungi un cliente, potrà accedere immediatamente da qualsiasi dispositivo!</p>
+                        </div>
+                        
+                        ${state.showAddClientForm ? `
+                            <div class="add-form" style="margin-bottom: 1.5rem;">
+                                <h3 style="margin-bottom: 1rem;">➕ Nuovo Cliente</h3>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Nome</label>
+                                        <input type="text" class="form-control" placeholder="Nome del cliente"
+                                               value="${state.newClient.nome}"
+                                               onchange="state.newClient.nome = this.value" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Cognome</label>
+                                        <input type="text" class="form-control" placeholder="Cognome del cliente"
+                                               value="${state.newClient.cognome}"
+                                               onchange="state.newClient.cognome = this.value" />
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    <button onclick="addClient()" class="btn btn-success">💾 Salva Cliente</button>
+                                    <button onclick="state.showAddClientForm = false; render()" class="btn btn-danger">❌ Annulla</button>
+                                </div>
+                            </div>
+                        ` : `
+                            <button onclick="state.showAddClientForm = true; render()" class="btn btn-primary" style="margin-bottom: 1.5rem;">
+                                <i class="bi bi-plus"></i> Aggiungi Cliente
+                            </button>
+                        `}
+                        
+                        <h3 style="margin-bottom: 1rem; color: #374151; font-size: 1.1rem;">📋 Clienti Autorizzati (${state.clients.length})</h3>
+                        
+                        ${state.clients.length === 0 ? `
+                            <p style="text-align: center; color: #6b7280; padding: 2rem;">Nessun cliente registrato</p>
+                        ` : state.clients.map(client => `
+                            <div class="client-item">
+                                <div>
+                                    <strong>${client.nome} ${client.cognome}</strong>
+                                    <small style="display: block; color: #6b7280; margin-top: 0.25rem;">
+                                        Aggiunto il ${new Date(client.addedDate).toLocaleDateString('it-IT')} - ✅ Sincronizzato su tutti i dispositivi
+                                    </small>
+                                </div>
+                                <button onclick="removeClient(${client.id})" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i> Rimuovi
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSyncStatus() {
+            if (state.syncStatus === 'idle') return '';
+            
+            const statusConfig = {
+                syncing: { 
+                    class: 'syncing', 
+                    icon: '<div class="spinner"></div>', 
+                    text: 'Sincronizzazione...' 
+                },
+                synced: { 
+                    class: 'synced', 
+                    icon: '<i class="bi bi-check-circle-fill"></i>', 
+                    text: 'Sincronizzato ✅' 
+                },
+                error: { 
+                    class: 'error', 
+                    icon: '<i class="bi bi-exclamation-triangle-fill"></i>', 
+                    text: 'Errore sincronizzazione' 
+                }
+            };
+            
+            const config = statusConfig[state.syncStatus];
+            
+            return `
+                <div class="sync-status ${config.class}">
+                    ${config.icon}
+                    <span>${config.text}</span>
+                </div>
+            `;
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            state.isMobile = isMobile();
+            
+            if (!state.isLoggedIn) {
+                app.innerHTML = renderLoginScreen();
+                return;
+            }
+            
+            app.innerHTML = `
+                <div class="app-container">
+                    ${renderAppHeader()}
+                    ${renderNavTabs()}
+                    ${renderSearch()}
+                    ${renderCategoryFilter()}
+                    ${renderAdminControls()}
+                    ${renderAddForm()}
+                    ${renderFoodList()}
+                    ${renderClientManagement()}
+                    ${renderSyncStatus()}
+                </div>
+            `;
+        }
+
+        // ==================== INITIALIZATION ====================
+        function init() {
+            // iOS viewport fix
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+                
+                window.addEventListener('orientationchange', () => {
+                    setTimeout(() => {
+                        document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+                        render();
+                    }, 200);
+                });
+                
+                window.addEventListener('resize', () => {
+                    document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+                    render();
+                });
+            }
+            
+            // Network status
+            window.addEventListener('online', () => {
+                state.isOnline = true;
+                syncData();
+                render();
+            });
+            
+            window.addEventListener('offline', () => {
+                state.isOnline = false;
+                render();
+            });
+            
+            // Responsive updates
+            window.addEventListener('resize', () => {
+                render();
+            });
+            
+            // Load data - IMPORTANTE: loadClients() prima di tutto
+            loadClients(); // ⭐ Carica clienti sincronizzati
+            loadData();
+            
+            // Check for saved user
+            const savedUser = localStorage.getItem('nutriCitUser');
+            if (savedUser) {
+                try {
+                    const userData = JSON.parse(savedUser);
+                    if (isAuthorizedClient(userData)) {
+                        state.currentUser = userData;
+                        state.isLoggedIn = true;
+                        
+                        // Initial sync if online
+                        if (state.isOnline) {
+                            setTimeout(() => syncData(), 1000);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Errore:', error);
+                }
+            }
+
+            render();
+        }
+
+        // Global functions
+        window.handleLogin = handleLogin;
+        window.handleLogout = handleLogout;
+        window.handleSearch = handleSearch;
+        window.handleCategoryChange = handleCategoryChange;
+        window.toggleExpanded = toggleExpanded;
+        window.startEdit = startEdit;
+        window.cancelEdit = cancelEdit;
+        window.saveEdit = saveEdit;
+        window.addNewFood = addNewFood;
+        window.deleteFood = deleteFood;
+        window.addClient = addClient;
+        window.removeClient = removeClient;
+        window.resetData = resetData;
+        window.syncData = syncData;
+        window.render = render;
+        window.state = state;
+
+        // Start app
+        init();
+    </script>
+</body>
+</html>
