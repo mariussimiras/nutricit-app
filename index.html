@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="NutriCit">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#059669">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="msapplication-tap-highlight" content="no">
+    <title>NutriCit - Guida Alimenti</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #059669;
+            --primary-hover: #047857;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --light-bg: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 50%, #a7f3d0 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --border-color: rgba(5, 150, 105, 0.2);
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --shadow-main: 0 8px 32px rgba(5, 150, 105, 0.15);
+            --shadow-hover: 0 12px 40px rgba(5, 150, 105, 0.25);
+            --vh: 1vh;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: var(--light-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            min-height: calc(var(--vh, 1vh) * 100);
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            min-height: calc(var(--vh, 1vh) * 100);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ==================== MOBILE INPUT FIXES ==================== */
+        .form-control, .form-select, input, select, textarea {
+            font-size: 16px !important; /* Previene zoom su iOS/Android */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border-radius: 0.75rem !important;
+            border: 2px solid var(--border-color) !important;
+            background: var(--card-bg) !important;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            padding: 0.875rem 1rem !important;
+        }
+
+        .form-control:focus, .form-select:focus, input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 0 0 0.2rem rgba(5, 150, 105, 0.25) !important;
+            outline: none !important;
+        }
+
+        /* ==================== ANDROID KEYBOARD OPTIMIZATIONS ==================== */
+        @media screen and (max-width: 768px) {
+            /* Forza font-size su tutti gli input per Android */
+            input, select, textarea, .form-control, .form-select {
+                font-size: 16px !important;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                border-radius: 0.75rem !important;
+                -webkit-border-radius: 0.75rem !important;
+                -webkit-tap-highlight-color: transparent;
+                -webkit-touch-callout: none;
+                transform: none !important;
+                transition: border-color 0.3s ease, background-color 0.3s ease !important;
+            }
+            
+            /* Rimuovi tutte le animazioni problematiche su mobile */
+            .form-control, .form-select, button, .btn, input, select, textarea {
+                transform: none !important;
+                transition: border-color 0.3s ease, background-color 0.3s ease !important;
+            }
+            
+            .form-control:focus, .form-select:focus, input:focus, select:focus, textarea:focus {
+                transform: none !important;
+                -webkit-transform: none !important;
+            }
+            
+            /* Disabilita zoom e comportamenti problematici */
+            * {
+                -webkit-tap-highlight-color: transparent;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                user-select: none;
+            }
+            
+            /* Abilita selezione solo su input */
+            input, textarea, select, .form-control, .form-select {
+                -webkit-user-select: text;
+                user-select: text;
+            }
+            
+            /* Stabilizza viewport Android */
+            html {
+                height: 100%;
+                height: calc(var(--vh, 1vh) * 100);
+                overflow: hidden;
+            }
+            
+            body {
+                height: 100%;
+                height: calc(var(--vh, 1vh) * 100);
+                overflow: hidden;
+                position: fixed;
+                width: 100%;
+            }
+            
+            .app-container {
+                height: 100vh;
+                height: calc(var(--vh, 1vh) * 100);
+                overflow: hidden;
+                position: relative;
+            }
+            
+            /* Previeni comportamenti strani della tastiera Android */
+            button, .btn {
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
+            }
+        }
+        
+        /* ==================== ANDROID KEYBOARD FOCUS MANAGEMENT ==================== */
+        @media screen and (max-width: 768px) and (orientation: portrait) {
+            /* Gestione speciale per Android in portrait */
+            .login-container {
+                height: 100vh;
+                height: 100dvh;
+                overflow: hidden;
+                position: fixed;
+                width: 100%;
+            }
+            
+            .login-card {
+                max-height: 90vh;
+                max-height: 90dvh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
+            }
+            
+            /* Container principale ottimizzato */
+            main {
+                height: calc(100vh - 120px);
+                height: calc(100dvh - 120px);
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
+                position: relative;
+            }
+        }
+
+        /* ==================== NAVBAR ==================== */
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #047857 50%, #065f46 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow-main);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .navbar-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.05) 100%);
+            pointer-events: none;
+        }
+
+        .navbar-brand {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .sync-indicator {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sync-indicator.syncing {
+            background: rgba(245, 158, 11, 0.9);
+            animation: pulse 1.5s infinite;
+        }
+
+        .sync-indicator.synced {
+            background: rgba(16, 185, 129, 0.9);
+        }
+
+        .sync-indicator.error {
+            background: rgba(239, 68, 68, 0.9);
+        }
+
+        /* ==================== BUTTONS ==================== */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #047857 100%);
+            border: none;
+            color: white;
+            box-shadow: var(--shadow-main);
+            border-radius: 0.75rem;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+            border: none;
+            box-shadow: var(--shadow-main);
+            border-radius: 0.75rem;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+            border: none;
+            box-shadow: var(--shadow-main);
+            border-radius: 0.75rem;
+        }
+
+        .btn-outline-primary {
+            background: var(--card-bg);
+            color: var(--primary-color);
+            border: 2px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            border-radius: 0.75rem;
+        }
+
+        .btn-outline-primary:hover {
+            background: rgba(5, 150, 105, 0.1);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* ==================== LOGIN SCREEN ==================== */
+        .login-container {
+            min-height: 100vh;
+            min-height: calc(var(--vh, 1vh) * 100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--light-bg);
+            padding: 1rem;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            padding: 3rem;
+            border-radius: 2rem;
+            box-shadow: var(--shadow-hover);
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid var(--border-color);
+        }
+
+        .login-header h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+            text-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+        }
+
+        /* ==================== FOOD ITEMS ==================== */
+        .food-item {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: var(--shadow-main);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .food-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), #10b981, var(--primary-color));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .food-item:hover::before {
+            opacity: 1;
+        }
+
+        .category-badge {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #10b981 100%);
+            color: white;
+            padding: 0.35rem 0.85rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+        }
+
+        .detail-item {
+            background: linear-gradient(135deg, rgba(236, 253, 245, 0.8) 0%, rgba(209, 250, 229, 0.8) 100%);
+            padding: 1.25rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(5, 150, 105, 0.15);
+        }
+
+        /* ==================== ADMIN CONTROLS ==================== */
+        .admin-controls {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fde68a 100%);
+            border-radius: 1.5rem;
+            border: 2px solid #fbbf24;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-main);
+            backdrop-filter: blur(10px);
+        }
+
+        /* ==================== ANIMATIONS ==================== */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .spinning {
+            animation: spin 1s linear infinite;
+        }
+
+        /* ==================== MOBILE OPTIMIZATIONS ==================== */
+        @media (max-width: 768px) {
+            .login-card {
+                padding: 2rem;
+                border-radius: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .food-item {
+                padding: 1.5rem;
+                border-radius: 1.25rem;
+            }
+            
+            .navbar-custom {
+                padding: 0.75rem 1rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+            
+            /* Migliore gestione della tastiera */
+            .container-fluid {
+                padding: 0.5rem;
+            }
+        }
+
+        /* ==================== iOS SAFE AREA ==================== */
+        @supports (padding: max(0px)) {
+            .navbar-custom {
+                padding-top: max(1rem, env(safe-area-inset-top));
+            }
+            
+            .container-fluid {
+                padding-left: max(0.5rem, env(safe-area-inset-left));
+                padding-right: max(0.5rem, env(safe-area-inset-right));
+            }
+            
+            .login-container {
+                padding-bottom: max(1rem, env(safe-area-inset-bottom));
+            }
+        }
+
+        /* ==================== CUSTOM SCROLLBAR ==================== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(5, 150, 105, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-color), #10b981);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #047857, var(--primary-color));
+        }
+
+        /* ==================== NO RESULTS ==================== */
+        .no-results {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
+        }
+
+        .no-results-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .no-results h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="app-container"></div>
+
+    <script>
+        // ==================== STATE MANAGEMENT ====================
+        const state = {
+            isLoggedIn: false,
+            currentUser: null,
+            activeTab: 'alimenti',
+            searchTerm: '',
+            searchInput: '',
+            searchTimeout: null,
+            selectedCategory: 'Tutte',
+            expandedItems: new Set(),
+            editingId: null,
+            editForm: {},
+            showAddForm: false,
+            newFood: {
+                nome: '',
+                categoria: 'Verdure',
+                emoji: '🥬',
+                produzione: '',
+                temperatura: '',
+                frigoFuori: 'Frigo',
+                posizionefrigo: '',
+                durata: '',
+                qualita: '',
+                conservazioneIdeale: ''
+            },
+            foodData: [],
+            syncStatus: 'idle',
+            lastSync: null,
+            isOnline: navigator.onLine,
+            isMobile: window.innerWidth <= 768
+        };
+
+        // ==================== DATI DEGLI ALIMENTI CENTRALIZZATI ====================
+        const STORAGE_KEY = 'nutriCitAppData';
+        const SYNC_KEY = 'nutriCitLastSync';
+        
+        // ==================== CLOUD SYNC CONFIGURATION ====================
+        const CLOUD_CONFIG = {
+            apiUrl: 'https://api.jsonbin.io/v3/b',
+            binId: '685bceb68960c979a5b10f73', // Sostituisci con il tuo Bin ID
+            apiKey: '$2a$10$k.cmd9o578vQJshNRuLfh.tXHHZvXBufMph7KgjtQverjWF4XZa56', // Sostituisci con la tua API Key
+            syncInterval: 5000,
+            maxRetries: 3,
+            retryDelay: 2000
+        };
+        
+        let syncInterval = null;
+
+        // Clienti autorizzati
+        const AUTHORIZED_CLIENTS = [
+            'marius simiras', // Admin - NON RIMUOVERE
+            'fausto nenci',
+        ];
+
+        const initialFoodData = [
+            {
+                id: 1,
+                nome: "Pomodori",
+                categoria: "Verdure",
+                emoji: "🍅",
+                produzione: "Biologica locale",
+                temperatura: "12-15°C",
+                frigoFuori: "Fuori",
+                posizionefrigo: "Non in frigo",
+                durata: "5-7 giorni",
+                qualita: "Eccellente",
+                conservazioneIdeale: "Conservare a temperatura ambiente, lontano dalla luce diretta. Non refrigerare per mantenere il sapore ottimale."
+            },
+            {
+                id: 2,
+                nome: "Lattuga",
+                categoria: "Verdure",
+                emoji: "🥬",
+                produzione: "Idroponica",
+                temperatura: "1-4°C",
+                frigoFuori: "Frigo",
+                posizionefrigo: "Cassetto verdure",
+                durata: "7-10 giorni",
+                qualita: "Buona",
+                conservazioneIdeale: "Lavare delicatamente, asciugare bene e conservare in sacchetto perforato nel cassetto verdure del frigorifero."
+            },
+            {
+                id: 3,
+                nome: "Mele",
+                categoria: "Frutta",
+                emoji: "🍎",
+                produzione: "Biologica",
+                temperatura: "0-4°C",
+                frigoFuori: "Entrambi",
+                posizionefrigo: "Cassetto frutta",
+                durata: "2-3 settimane",
+                qualita: "Eccellente",
+                conservazioneIdeale: "Possono essere conservate a temperatura ambiente per 5-7 giorni o in frigorifero per 2-3 settimane. Tenere separate da altre frutte."
+            },
+            {
+                id: 4,
+                nome: "Parmigiano Reggiano",
+                categoria: "Latticini",
+                emoji: "🧀",
+                produzione: "DOP",
+                temperatura: "4-8°C",
+                frigoFuori: "Frigo",
+                posizionefrigo: "Ripiano centrale",
+                durata: "3-4 settimane",
+                qualita: "Eccellente",
+                conservazioneIdeale: "Avvolgere in carta pergamena o panno umido, poi in pellicola trasparente. Lasciare respirare aprendo periodicamente."
+            },
+            {
+                id: 5,
+                nome: "Pane Integrale",
+                categoria: "Cereali e Derivati",
+                emoji: "🍞",
+                produzione: "Artigianale",
+                temperatura: "Ambiente",
+                frigoFuori: "Fuori",
+                posizionefrigo: "Non in frigo",
+                durata: "3-5 giorni",
+                qualita: "Buona",
+                conservazioneIdeale: "Conservare in sacchetto di carta o panno in luogo fresco e asciutto. Per durata maggiore, congelare a fette."
+            }
+        ];
+
+        const categories = ['Tutte', 'Verdure', 'Frutta', 'Latticini', 'Cereali e Derivati', 'Carne e Pesce', 'Legumi', 'Condimenti e Spezie', 'Bevande', 'Dolci', 'Altro'];
+
+        const categoryEmojis = {
+            'Verdure': '🥬',
+            'Frutta': '🍎', 
+            'Latticini': '🧀',
+            'Cereali e Derivati': '🌾',
+            'Carne e Pesce': '🍖',
+            'Legumi': '🫘',
+            'Condimenti e Spezie': '🧂',
+            'Bevande': '🥤',
+            'Dolci': '🍰',
+            'Altro': '🍽️'
+        };
+
+        const availableEmojis = {
+            'Verdure': ['🥬', '🥒', '🍅', '🥕', '🧅', '🥔', '🍆', '🥦', '🌶️', '🫑', '🥗', '🥙'],
+            'Frutta': ['🍎', '🍊', '🍌', '🍇', '🍓', '🥝', '🍑', '🍒', '🥭', '🍍', '🥥', '🫐'],
+            'Latticini': ['🧀', '🥛', '🧈', '🍼', '🥯', '🧊'],
+            'Cereali e Derivati': ['🌾', '🍞', '🥖', '🥨', '🥞', '🍝', '🍜', '🍚', '🍙', '🥣'],
+            'Carne e Pesce': ['🍖', '🥩', '🍗', '🥓', '🌭', '🍤', '🦐', '🦀', '🐟', '🍣', '🍱'],
+            'Legumi': ['🫘', '🥜', '🌰', '🫛'],
+            'Condimenti e Spezie': ['🧂', '🫚', '🧄', '🌿', '🍯', '🫒', '🥄'],
+            'Bevande': ['🥤', '☕', '🧃', '🧊', '🍷', '🍺', '🍾', '🥃', '🧋', '🫖'],
+            'Dolci': ['🍰', '🎂', '🧁', '🍪', '🍫', '🍬', '🍭', '🍩', '🍨', '🍦'],
+            'Altro': ['🍽️', '🥄', '🔥', '⭐', '💎', '✨']
+        };
+
+        // ==================== AUTHENTICATION ====================
+        function isAuthorizedClient(userData) {
+            if (!userData || !userData.nome || !userData.cognome) return false;
+            const fullName = (userData.nome + ' ' + userData.cognome).toLowerCase().trim();
+            return AUTHORIZED_CLIENTS.some(client => client.toLowerCase().trim() === fullName);
+        }
+
+        function isAdmin(userData) {
+            if (!userData) return false;
+            const fullName = (userData.nome + ' ' + userData.cognome).toLowerCase().trim();
+            return fullName === 'marius simiras';
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const nome = document.getElementById('nome').value.trim();
+            const cognome = document.getElementById('cognome').value.trim();
+            
+            if (!nome || !cognome) {
+                alert('Inserisci nome e cognome');
+                return;
+            }
+            
+            const userData = { nome, cognome };
+            
+            if (!isAuthorizedClient(userData)) {
+                alert('Accesso non autorizzato. Contatta l\'amministratore.');
+                return;
+            }
+            
+            state.currentUser = userData;
+            state.isLoggedIn = true;
+            
+            localStorage.setItem('nutriCitUser', JSON.stringify(userData));
+            
+            if (state.isOnline) {
+                setTimeout(() => checkForUpdates(), 1000);
+                startSyncInterval();
+            }
+            
+            render();
+        }
+
+        function handleLogout() {
+            state.isLoggedIn = false;
+            state.currentUser = null;
+            localStorage.removeItem('nutriCitUser');
+            stopSyncInterval();
+            render();
+        }
+
+        // ==================== CLOUD SYNC FUNCTIONS ====================
+        async function saveToCloud(data) {
+            if (!CLOUD_CONFIG.binId || CLOUD_CONFIG.binId === 'YOUR_BIN_ID') {
+                console.log('🌐 Cloud sync non configurato - usando localStorage');
+                return saveDataLocal(data);
+            }
+            
+            try {
+                state.syncStatus = 'syncing';
+                render();
+                
+                const response = await fetch(`${CLOUD_CONFIG.apiUrl}/${CLOUD_CONFIG.binId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': CLOUD_CONFIG.apiKey,
+                        'X-Bin-Versioning': 'false'
+                    },
+                    body: JSON.stringify({
+                        foodData: data,
+                        lastModified: new Date().toISOString(),
+                        version: '2.0',
+                        deviceId: getDeviceId(),
+                        modifiedBy: state.currentUser?.nome + ' ' + state.currentUser?.cognome
+                    })
+                });
+                
+                if (response.ok) {
+                    state.lastSync = new Date();
+                    localStorage.setItem(SYNC_KEY, state.lastSync.toISOString());
+                    state.syncStatus = 'synced';
+                    console.log('✅ Dati salvati nel cloud e sincronizzati');
+                } else {
+                    throw new Error('Errore salvataggio cloud');
+                }
+                
+            } catch (error) {
+                console.error('❌ Errore sync cloud:', error);
+                state.syncStatus = 'error';
+                saveDataLocal(data);
+            }
+            
+            setTimeout(() => {
+                state.syncStatus = 'idle';
+                render();
+            }, 3000);
+        }
+        
+        async function loadFromCloud() {
+            if (!CLOUD_CONFIG.binId || CLOUD_CONFIG.binId === 'YOUR_BIN_ID') {
+                console.log('🌐 Cloud sync non configurato - usando localStorage');
+                return loadDataLocal();
+            }
+            
+            try {
+                const response = await fetch(`${CLOUD_CONFIG.apiUrl}/${CLOUD_CONFIG.binId}/latest`, {
+                    headers: {
+                        'X-Master-Key': CLOUD_CONFIG.apiKey
+                    }
+                });
+                
+                if (response.ok) {
+                    const cloudData = await response.json();
+                    const data = cloudData.record;
+                    
+                    if (data && data.foodData) {
+                        state.foodData = data.foodData;
+                        
+                        state.foodData = state.foodData.map(item => ({
+                            ...item,
+                            emoji: item.emoji || categoryEmojis[item.categoria] || '🍽️'
+                        }));
+                        
+                        state.lastSync = new Date(data.lastModified);
+                        localStorage.setItem(SYNC_KEY, state.lastSync.toISOString());
+                        
+                        console.log('✅ Dati caricati dal cloud');
+                        console.log(`📝 Ultima modifica da: ${data.modifiedBy || 'Sconosciuto'}`);
+                        return true;
+                    }
+                }
+                
+                return loadDataLocal();
+                
+            } catch (error) {
+                console.error('❌ Errore caricamento cloud:', error);
+                return loadDataLocal();
+            }
+        }
+        
+        async function checkForUpdates() {
+            if (!state.isOnline || !CLOUD_CONFIG.binId || CLOUD_CONFIG.binId === 'YOUR_BIN_ID') {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${CLOUD_CONFIG.apiUrl}/${CLOUD_CONFIG.binId}/latest`, {
+                    headers: {
+                        'X-Master-Key': CLOUD_CONFIG.apiKey
+                    }
+                });
+                
+                if (response.ok) {
+                    const cloudData = await response.json();
+                    const data = cloudData.record;
+                    
+                    if (data && data.lastModified) {
+                        const cloudLastModified = new Date(data.lastModified);
+                        const localLastModified = state.lastSync || new Date(0);
+                        
+                        if (cloudLastModified > localLastModified) {
+                            console.log('🔄 Nuovi aggiornamenti disponibili dal cloud');
+                            state.foodData = data.foodData;
+                            
+                            state.foodData = state.foodData.map(item => ({
+                                ...item,
+                                emoji: item.emoji || categoryEmojis[item.categoria] || '🍽️'
+                            }));
+                            
+                            state.lastSync = cloudLastModified;
+                            localStorage.setItem(SYNC_KEY, cloudLastModified.toISOString());
+                            
+                            showSyncNotification(`Aggiornato da: ${data.modifiedBy || 'Altro dispositivo'}`);
+                            render();
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Errore controllo aggiornamenti:', error);
+            }
+        }
+        
+        function startSyncInterval() {
+            if (syncInterval) {
+                clearInterval(syncInterval);
+            }
+            
+            if (state.isOnline && CLOUD_CONFIG.binId !== 'YOUR_BIN_ID') {
+                syncInterval = setInterval(checkForUpdates, CLOUD_CONFIG.syncInterval);
+                console.log('🔄 Sincronizzazione automatica attivata');
+            }
+        }
+        
+        function stopSyncInterval() {
+            if (syncInterval) {
+                clearInterval(syncInterval);
+                syncInterval = null;
+                console.log('⏹️ Sincronizzazione automatica fermata');
+            }
+        }
+        
+        function getDeviceId() {
+            let deviceId = localStorage.getItem('nutriCitDeviceId');
+            if (!deviceId) {
+                deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('nutriCitDeviceId', deviceId);
+            }
+            return deviceId;
+        }
+        
+        function showSyncNotification(message) {
+            const toastHTML = `
+                <div class="toast-container position-fixed top-0 end-0 p-3">
+                    <div class="toast show" role="alert">
+                        <div class="toast-header bg-success text-white">
+                            <strong class="me-auto">🔄 Sincronizzazione</strong>
+                            <small>ora</small>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                        </div>
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', toastHTML);
+            const toastEl = document.querySelector('.toast:last-child');
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+            
+            setTimeout(() => {
+                toastEl.remove();
+            }, 5000);
+        }
+        
+        function saveDataLocal(data) {
+            try {
+                const dataToSave = {
+                    foodData: data || state.foodData,
+                    lastModified: new Date().toISOString(),
+                    version: '2.0',
+                    deviceId: getDeviceId()
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+                state.lastSync = new Date();
+                localStorage.setItem(SYNC_KEY, state.lastSync.toISOString());
+                console.log('✅ Dati salvati localmente');
+                return true;
+            } catch (error) {
+                console.error('❌ Errore salvataggio locale:', error);
+                return false;
+            }
+        }
+        
+        function loadDataLocal() {
+            try {
+                const savedData = localStorage.getItem(STORAGE_KEY);
+                if (savedData) {
+                    const parsed = JSON.parse(savedData);
+                    state.foodData = parsed.foodData || [...initialFoodData];
+                    
+                    state.foodData = state.foodData.map(item => ({
+                        ...item,
+                        emoji: item.emoji || categoryEmojis[item.categoria] || '🍽️'
+                    }));
+                    
+                    if (parsed.lastModified) {
+                        state.lastSync = new Date(parsed.lastModified);
+                    }
+                } else {
+                    state.foodData = [...initialFoodData];
+                    saveDataLocal();
+                }
+                
+                console.log('✅ Dati caricati localmente');
+                return true;
+            } catch (error) {
+                console.error('❌ Errore caricamento locale:', error);
+                state.foodData = [...initialFoodData];
+                return false;
+            }
+        }
+
+        // ==================== ANDROID KEYBOARD HANDLING ====================
+        function handleAndroidKeyboard() {
+            if (/Android/i.test(navigator.userAgent)) {
+                console.log('📱 Android detected - attivando ottimizzazioni tastiera');
+                
+                // Gestione focus input per Android
+                document.addEventListener('focusin', function(e) {
+                    if (e.target.matches('input, textarea, select')) {
+                        setTimeout(() => {
+                            if (e.target.scrollIntoView) {
+                                e.target.scrollIntoView({ 
+                                    block: 'center', 
+                                    behavior: 'smooth' 
+                                });
+                            }
+                        }, 300);
+                    }
+                });
+                
+                // Gestione blur per stabilizzare viewport
+                document.addEventListener('focusout', function(e) {
+                    if (e.target.matches('input, textarea, select')) {
+                        setTimeout(() => {
+                            window.scrollTo(0, 0);
+                        }, 100);
+                    }
+                });
+                
+                // Fix viewport Android
+                function setViewportHeight() {
+                    const vh = window.innerHeight * 0.01;
+                    document.documentElement.style.setProperty('--vh', `${vh}px`);
+                }
+                
+                setViewportHeight();
+                window.addEventListener('resize', setViewportHeight);
+                window.addEventListener('orientationchange', () => {
+                    setTimeout(setViewportHeight, 200);
+                });
+            }
+        }
+        function handleSearchInput(value) {
+            state.searchInput = value;
+            
+            if (state.searchTimeout) {
+                clearTimeout(state.searchTimeout);
+            }
+            
+            state.searchTimeout = setTimeout(() => {
+                state.searchTerm = value.toLowerCase().trim();
+                renderFoodListOnly();
+            }, 300);
+        }
+
+        function clearSearch() {
+            state.searchInput = '';
+            state.searchTerm = '';
+            if (state.searchTimeout) {
+                clearTimeout(state.searchTimeout);
+            }
+            
+            const searchInput = document.querySelector('#searchInput');
+            if (searchInput) {
+                searchInput.value = '';
+            }
+            
+            renderFoodListOnly();
+        }
+
+        function handleCategoryChange(category) {
+            state.selectedCategory = category;
+            renderFoodListOnly();
+        }
+
+        function getFilteredFoods() {
+            let filtered = [...state.foodData];
+            
+            if (state.selectedCategory !== 'Tutte') {
+                filtered = filtered.filter(item => item.categoria === state.selectedCategory);
+            }
+            
+            if (state.searchTerm) {
+                filtered = filtered.filter(item => 
+                    item.nome.toLowerCase().includes(state.searchTerm) ||
+                    item.categoria.toLowerCase().includes(state.searchTerm) ||
+                    item.produzione.toLowerCase().includes(state.searchTerm) ||
+                    item.conservazioneIdeale.toLowerCase().includes(state.searchTerm)
+                );
+            }
+            
+            return filtered.sort((a, b) => a.nome.localeCompare(b.nome));
+        }
+
+        function toggleExpanded(id) {
+            if (state.expandedItems.has(id)) {
+                state.expandedItems.delete(id);
+            } else {
+                state.expandedItems.add(id);
+            }
+            render();
+        }
+
+        function startEdit(item) {
+            state.editingId = item.id;
+            state.editForm = { ...item };
+            if (!state.editForm.emoji) {
+                state.editForm.emoji = categoryEmojis[item.categoria] || '🍽️';
+            }
+            render();
+        }
+
+        function cancelEdit() {
+            state.editingId = null;
+            state.editForm = {};
+            render();
+        }
+
+        function saveEdit() {
+            if (!state.editForm.nome || !state.editForm.categoria) {
+                alert('Nome e categoria sono obbligatori');
+                return;
+            }
+            
+            if (!state.editForm.emoji) {
+                state.editForm.emoji = categoryEmojis[state.editForm.categoria] || '🍽️';
+            }
+            
+            state.foodData = state.foodData.map(item => 
+                item.id === state.editingId ? { ...state.editForm } : item
+            );
+            state.editingId = null;
+            state.editForm = {};
+            
+            saveToCloud(state.foodData);
+            render();
+        }
+
+        function addNewFood() {
+            if (!state.newFood.nome || !state.newFood.categoria) {
+                alert('Nome e categoria sono obbligatori');
+                return;
+            }
+            
+            const newId = Math.max(...state.foodData.map(item => item.id), 0) + 1;
+            state.foodData.push({ ...state.newFood, id: newId });
+            state.newFood = {
+                nome: '',
+                categoria: 'Verdure',
+                emoji: '🥬',
+                produzione: '',
+                temperatura: '',
+                frigoFuori: 'Frigo',
+                posizionefrigo: '',
+                durata: '',
+                qualita: '',
+                conservazioneIdeale: ''
+            };
+            state.showAddForm = false;
+            
+            saveToCloud(state.foodData);
+            render();
+        }
+
+        function deleteFood(id) {
+            if (confirm('Sei sicuro di voler eliminare questo alimento?')) {
+                state.foodData = state.foodData.filter(item => item.id !== id);
+                saveToCloud(state.foodData);
+                render();
+            }
+        }
+
+        function resetData() {
+            if (confirm('Sei sicuro di voler ripristinare tutti i dati originali? Questa azione non può essere annullata.')) {
+                state.foodData = [...initialFoodData];
+                saveToCloud(state.foodData);
+                render();
+            }
+        }
+
+        async function manualSync() {
+            if (CLOUD_CONFIG.binId !== 'YOUR_BIN_ID') {
+                await checkForUpdates();
+                showSyncNotification('Sincronizzazione manuale completata');
+            } else {
+                saveDataLocal(state.foodData);
+                state.syncStatus = 'synced';
+                render();
+                setTimeout(() => {
+                    state.syncStatus = 'idle';
+                    render();
+                }, 2000);
+            }
+        }
+
+        function renderFoodListOnly() {
+            const foodListContainer = document.querySelector('#foodList');
+            if (foodListContainer && state.activeTab === 'alimenti') {
+                const filteredFoods = getFilteredFoods();
+                
+                if (filteredFoods.length === 0) {
+                    foodListContainer.innerHTML = `
+                        <div class="no-results">
+                            <div class="no-results-icon">🔍</div>
+                            <h3>Nessun alimento trovato</h3>
+                            <p>Prova a modificare i criteri di ricerca</p>
+                        </div>
+                    `;
+                } else {
+                    foodListContainer.innerHTML = filteredFoods.map(item => renderFoodItem(item)).join('');
+                }
+            }
+        }
+
+        // ==================== RENDER FUNCTIONS ====================
+        function renderLoginScreen() {
+            return `
+                <div class="login-container">
+                    <div class="login-card">
+                        <div class="login-header text-center">
+                            <h1><i class="bi bi-leaf"></i> NutriCit</h1>
+                            <p class="text-muted">Guida alla conservazione degli alimenti</p>
+                        </div>
+                        <form onsubmit="handleLogin(event)">
+                            <div class="mb-3">
+                                <label for="nome" class="form-label">👤 Nome</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="nome" 
+                                    required 
+                                    autocomplete="given-name"
+                                    placeholder="Il tuo nome"
+                                />
+                            </div>
+                            <div class="mb-3">
+                                <label for="cognome" class="form-label">👥 Cognome</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="cognome" 
+                                    required 
+                                    autocomplete="family-name"
+                                    placeholder="Il tuo cognome"
+                                />
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 py-3">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                Accedi
+                            </button>
+                        </form>
+                        <div class="text-center mt-4 pt-3 border-top">
+                            <small class="text-muted">
+                                🔒 Accesso riservato ai clienti autorizzati
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderNavbar() {
+            const syncIcon = {
+                idle: 'bi-cloud',
+                syncing: 'bi-arrow-repeat',
+                synced: 'bi-cloud-check',
+                error: 'bi-cloud-slash'
+            };
+            
+            const syncText = {
+                idle: 'In attesa',
+                syncing: 'Sincronizzazione...',
+                synced: 'Sincronizzato',
+                error: 'Errore sync'
+            };
+            
+            const isCloudConfigured = CLOUD_CONFIG.binId !== 'YOUR_BIN_ID';
+            
+            return `
+                <nav class="navbar-custom">
+                    <div class="container-fluid">
+                        <div class="d-flex align-items-center">
+                            <span class="navbar-brand mb-0 h1">
+                                <i class="bi bi-leaf"></i> NutriCit
+                            </span>
+                            ${!state.isOnline ? '<span class="badge bg-danger ms-2">📵 Offline</span>' : ''}
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="sync-indicator ${state.syncStatus}">
+                                <i class="bi ${syncIcon[state.syncStatus]} ${state.syncStatus === 'syncing' ? 'spinning' : ''}"></i>
+                                <span class="d-none d-sm-inline">${isCloudConfigured ? syncText[state.syncStatus] : 'Locale'}</span>
+                            </div>
+                            <span class="text-white d-none d-md-inline">
+                                ${isAdmin(state.currentUser) ? '👑' : '👤'} ${state.currentUser.nome} ${state.currentUser.cognome}
+                            </span>
+                            <button onclick="handleLogout()" class="btn btn-outline-light btn-sm">
+                                <i class="bi bi-box-arrow-right"></i> <span class="d-none d-sm-inline">Esci</span>
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+            `;
+        }
+
+        function renderTabNavigation() {
+            const tabs = [
+                { id: 'alimenti', label: 'Alimenti', icon: 'bi-basket' },
+                ...(isAdmin(state.currentUser) ? [{ id: 'clienti', label: 'Gestione Clienti', icon: 'bi-people' }] : [])
+            ];
+            
+            return `
+                <ul class="nav nav-pills nav-fill bg-light p-3 shadow-sm">
+                    ${tabs.map(tab => `
+                        <li class="nav-item">
+                            <button 
+                                class="nav-link ${state.activeTab === tab.id ? 'active' : ''}"
+                                onclick="state.activeTab = '${tab.id}'; render()"
+                            >
+                                <i class="${tab.icon}"></i>
+                                <span class="d-none d-sm-inline ms-1">${tab.label}</span>
+                            </button>
+                        </li>
+                    `).join('')}
+                </ul>
+            `;
+        }
+
+        function renderSearch() {
+            if (state.activeTab !== 'alimenti') return '';
+            
+            return `
+                <div class="mb-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="searchInput"
+                            placeholder="🔍 Cerca un alimento..."
+                            value="${state.searchInput}"
+                            oninput="handleSearchInput(this.value)"
+                            autocomplete="off"
+                        />
+                        ${state.searchInput ? `
+                            <button 
+                                class="btn btn-outline-secondary"
+                                onclick="clearSearch()"
+                                type="button"
+                            >
+                                <i class="bi bi-x-circle"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCategoryFilter() {
+            if (state.activeTab !== 'alimenti') return '';
+            
+            return `
+                <div class="mb-4">
+                    <select 
+                        class="form-select"
+                        onchange="handleCategoryChange(this.value)"
+                    >
+                        ${categories.map(cat => 
+                            `<option value="${cat}" ${state.selectedCategory === cat ? 'selected' : ''}>
+                                ${cat === 'Tutte' ? '🌍 ' : categoryEmojis[cat] + ' '}${cat}
+                            </option>`
+                        ).join('')}
+                    </select>
+                </div>
+            `;
+        }
+
+        function renderAdminControls() {
+            if (!isAdmin(state.currentUser) || state.activeTab !== 'alimenti') return '';
+            
+            const isCloudConfigured = CLOUD_CONFIG.binId !== 'YOUR_BIN_ID';
+            
+            return `
+                <div class="admin-controls">
+                    <h5 class="text-warning mb-3">👑 Controlli Amministratore</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button onclick="state.showAddForm = !state.showAddForm; render()" class="btn btn-success">
+                            <i class="bi bi-plus"></i> ${state.showAddForm ? 'Nascondi Form' : 'Aggiungi Alimento'}
+                        </button>
+                        <button onclick="resetData()" class="btn btn-danger">
+                            <i class="bi bi-arrow-clockwise"></i> Ripristina Dati
+                        </button>
+                        <button onclick="manualSync()" class="btn btn-primary">
+                            <i class="bi bi-cloud-arrow-up"></i> ${isCloudConfigured ? 'Forza Sync' : 'Sync Locale'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAddForm() {
+            if (!state.showAddForm) return '';
+            
+            return `
+                <div class="card bg-light border-success mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">✨ Aggiungi Nuovo Alimento</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">🏷️ Nome *</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control"
+                                    value="${state.newFood.nome}" 
+                                    oninput="state.newFood.nome = this.value"
+                                    placeholder="Nome dell'alimento"
+                                />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">📂 Categoria *</label>
+                                <select 
+                                    class="form-select"
+                                    onchange="state.newFood.categoria = this.value; state.newFood.emoji = categoryEmojis[this.value] || '🍽️'; render()"
+                                >
+                                    ${categories.slice(1).map(cat => 
+                                        `<option value="${cat}" ${state.newFood.categoria === cat ? 'selected' : ''}>
+                                            ${categoryEmojis[cat]} ${cat}
+                                        </option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">😊 Emoticon</label>
+                                <div class="d-flex align-items-center gap-3 mb-2">
+                                    <span style="font-size: 2rem; padding: 0.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 0.75rem;">${state.newFood.emoji}</span>
+                                    <button 
+                                        type="button"
+                                        onclick="state.newFood.emoji = categoryEmojis[state.newFood.categoria] || '🍽️'; render()"
+                                        class="btn btn-outline-secondary btn-sm"
+                                    >
+                                        Reset Default
+                                    </button>
+                                </div>
+                                <div class="d-flex flex-wrap gap-1" style="max-height: 100px; overflow-y: auto;">
+                                    ${availableEmojis[state.newFood.categoria]?.map(emoji => `
+                                        <button 
+                                            type="button"
+                                            onclick="state.newFood.emoji = '${emoji}'; render()"
+                                            class="btn ${state.newFood.emoji === emoji ? 'btn-success' : 'btn-outline-secondary'} btn-sm"
+                                            style="padding: 0.25rem 0.5rem;"
+                                        >
+                                            ${emoji}
+                                        </button>
+                                    `).join('') || '<p class="text-muted">Seleziona una categoria</p>'}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">🌱 Produzione</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control"
+                                    value="${state.newFood.produzione}" 
+                                    oninput="state.newFood.produzione = this.value"
+                                    placeholder="Es: Biologica, Locale"
+                                />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">🌡️ Temperatura</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control"
+                                    value="${state.newFood.temperatura}" 
+                                    oninput="state.newFood.temperatura = this.value"
+                                    placeholder="Es: 2-4°C"
+                                />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">❄️ Conservazione</label>
+                                <select 
+                                    class="form-select"
+                                    onchange="state.newFood.frigoFuori = this.value"
+                                >
+                                    <option value="Frigo" ${state.newFood.frigoFuori === 'Frigo' ? 'selected' : ''}>🧊 Frigo</option>
+                                    <option value="Fuori" ${state.newFood.frigoFuori === 'Fuori' ? 'selected' : ''}>🌡️ Fuori</option>
+                                    <option value="Entrambi" ${state.newFood.frigoFuori === 'Entrambi' ? 'selected' : ''}>↔️ Entrambi</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">📍 Posizione Frigo</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control"
+                                    value="${state.newFood.posizionefrigo}" 
+                                    oninput="state.newFood.posizionefrigo = this.value"
+                                    placeholder="Es: Cassetto verdure"
+                                />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">⏱️ Durata</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control"
+                                    value="${state.newFood.durata}" 
+                                    oninput="state.newFood.durata = this.value"
+                                    placeholder="Es: 5-7 giorni"
+                                />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">⭐ Qualità</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control"
+                                    value="${state.newFood.qualita}" 
+                                    oninput="state.newFood.qualita = this.value"
+                                    placeholder="Es: Eccellente"
+                                />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">💡 Conservazione Ideale</label>
+                                <textarea 
+                                    class="form-control"
+                                    rows="3"
+                                    oninput="state.newFood.conservazioneIdeale = this.value"
+                                    placeholder="Descrizione dettagliata..."
+                                >${state.newFood.conservazioneIdeale}</textarea>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <button onclick="addNewFood()" class="btn btn-success">
+                                <i class="bi bi-plus"></i> Aggiungi
+                            </button>
+                            <button onclick="state.showAddForm = false; render()" class="btn btn-outline-secondary">
+                                <i class="bi bi-x"></i> Annulla
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFoodItem(item) {
+            const isExpanded = state.expandedItems.has(item.id);
+            const isEditing = state.editingId === item.id;
+            
+            if (isEditing) {
+                return renderEditForm(item);
+            }
+            
+            return `
+                <div class="food-item">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <span style="font-size: 2rem;">${item.emoji || categoryEmojis[item.categoria] || '🍽️'}</span>
+                            <div>
+                                <h5 class="mb-1">${item.nome}</h5>
+                                <span class="category-badge">${item.categoria}</span>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            ${isAdmin(state.currentUser) ? `
+                                <button onclick="startEdit(${JSON.stringify(item).replace(/"/g, '&quot;')})" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button onclick="deleteFood(${item.id})" class="btn btn-danger btn-sm">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            ` : ''}
+                            <button onclick="toggleExpanded(${item.id})" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-chevron-${isExpanded ? 'up' : 'down'}"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="text-muted mb-3">
+                        <strong>🏠 Conservazione:</strong> ${item.frigoFuori}
+                        ${item.temperatura ? ` • <strong>🌡️ Temperatura:</strong> ${item.temperatura}` : ''}
+                        ${item.durata ? ` • <strong>⏱️ Durata:</strong> ${item.durata}` : ''}
+                    </div>
+                    
+                    ${isExpanded ? `
+                        <div class="row g-3">
+                            ${item.produzione ? `
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <div class="fw-bold text-success">🌱 Produzione</div>
+                                        <div>${item.produzione}</div>
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            ${item.posizionefrigo ? `
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <div class="fw-bold text-success">📍 Posizione Frigo</div>
+                                        <div>${item.posizionefrigo}</div>
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            ${item.qualita ? `
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <div class="fw-bold text-success">⭐ Qualità</div>
+                                        <div>${item.qualita}</div>
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            ${item.conservazioneIdeale ? `
+                                <div class="col-12">
+                                    <div class="detail-item">
+                                        <div class="fw-bold text-success">💡 Conservazione Ideale</div>
+                                        <div>${item.conservazioneIdeale}</div>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function renderEditForm(item) {
+            return `
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">✏️ Modifica Alimento</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">🏷️ Nome *</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control"
+                                    value="${item.nome}" 
+                                    oninput="state.editForm.nome = this.value"
+                                />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">📂 Categoria *</label>
+                                <select 
+                                    class="form-select"
+                                    onchange="state.editForm.categoria = this.value; if (!state.editForm.emoji) state.editForm.emoji = categoryEmojis[this.value] || '🍽️'; render()"
+                                >
+                                    ${categories.slice(1).map(cat => 
+                                        `<option value="${cat}" ${item.categoria === cat ? 'selected' : ''}>
+                                            ${categoryEmojis[cat]} ${cat}
+                                        </option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">😊 Emoticon</label>
+                                <div class="d-flex align-items-center gap-3 mb-2">
+                                    <span style="font-size: 2rem; padding: 0.5rem; background: rgba(5, 150, 105, 0.1); border-radius: 0.75rem;">${state.editForm.emoji || item.emoji || categoryEmojis[item.categoria] || '🍽️'}</span>
+                                    <button 
+                                        type="button"
+                                        onclick="state.editForm.emoji = categoryEmojis[state.editForm.categoria] || '🍽️'; render()"
+                                        class="btn btn-outline-secondary btn-sm"
+                                    >
+                                        Reset Default
+                                    </button>
+                                </div>
+                                <div class="d-flex flex-wrap gap-1" style="max-height: 100px; overflow-y: auto;">
+                                    ${availableEmojis[state.editForm.categoria || item.categoria]?.map(emoji => `
+                                        <button 
+                                            type="button"
+                                            onclick="state.editForm.emoji = '${emoji}'; render()"
+                                            class="btn ${(state.editForm.emoji || item.emoji) === emoji ? 'btn-primary' : 'btn-outline-secondary'} btn-sm"
+                                            style="padding: 0.25rem 0.5rem;"
+                                        >
+                                            ${emoji}
+                                        </button>
+                                    `).join('') || '<p class="text-muted">Seleziona una categoria</p>'}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">🌱 Produzione</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control"
+                                    value="${item.produzione}" 
+                                    oninput="state.editForm.produzione = this.value"
+                                />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">🌡️ Temperatura</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control"
+                                    value="${item.temperatura}" 
+                                    oninput="state.editForm.temperatura = this.value"
+                                />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">❄️ Conservazione</label>
+                                <select 
+                                    class="form-select"
+                                    onchange="state.editForm.frigoFuori = this.value"
+                                >
+                                    <option value="Frigo" ${item.frigoFuori === 'Frigo' ? 'selected' : ''}>🧊 Frigo</option>
+                                    <option value="Fuori" ${item.frigoFuori === 'Fuori' ? 'selected' : ''}>🌡️ Fuori</option>
+                                    <option value="Entrambi" ${item.frigoFuori === 'Entrambi' ? 'selected' : ''}>↔️ Entrambi</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">📍 Posizione Frigo</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control"
+                                    value="${item.posizionefrigo}" 
+                                    oninput="state.editForm.posizionefrigo = this.value"
+                                />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">⏱️ Durata</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control"
+                                    value="${item.durata}" 
+                                    oninput="state.editForm.durata = this.value"
+                                />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">⭐ Qualità</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control"
+                                    value="${item.qualita}" 
+                                    oninput="state.editForm.qualita = this.value"
+                                />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">💡 Conservazione Ideale</label>
+                                <textarea 
+                                    class="form-control"
+                                    rows="3"
+                                    oninput="state.editForm.conservazioneIdeale = this.value"
+                                >${item.conservazioneIdeale}</textarea>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <button onclick="saveEdit()" class="btn btn-success">
+                                <i class="bi bi-check"></i> Salva
+                            </button>
+                            <button onclick="cancelEdit()" class="btn btn-outline-secondary">
+                                <i class="bi bi-x"></i> Annulla
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFoodList() {
+            if (state.activeTab !== 'alimenti') return '';
+            
+            const filteredFoods = getFilteredFoods();
+            
+            if (filteredFoods.length === 0) {
+                return `
+                    <div id="foodList">
+                        <div class="no-results">
+                            <div class="no-results-icon">🔍</div>
+                            <h3>Nessun alimento trovato</h3>
+                            <p>Prova a modificare i criteri di ricerca</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div id="foodList">
+                    ${filteredFoods.map(item => renderFoodItem(item)).join('')}
+                </div>
+            `;
+        }
+
+        function renderClientManagement() {
+            if (!isAdmin(state.currentUser) || state.activeTab !== 'clienti') return '';
+            
+            const isCloudConfigured = CLOUD_CONFIG.binId !== 'YOUR_BIN_ID';
+            
+            return `
+                <div class="container-fluid">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h2 class="mb-0">👥 Gestione Clienti</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert ${isCloudConfigured ? 'alert-success' : 'alert-warning'}">
+                                <h4 class="alert-heading">
+                                    ${isCloudConfigured ? '🌐 Sincronizzazione Cloud ATTIVA' : '⚠️ Sincronizzazione Cloud NON Configurata'}
+                                </h4>
+                                
+                                ${isCloudConfigured ? `
+                                    <div class="card bg-light mb-3">
+                                        <div class="card-body">
+                                            <h5 class="text-success">✅ Sincronizzazione Live Attiva!</h5>
+                                            <ul class="mb-0">
+                                                <li>Le modifiche si sincronizzano <strong>automaticamente</strong> ogni 5 secondi</li>
+                                                <li>Tutti i dispositivi vedono le modifiche in <strong>tempo reale</strong></li>
+                                                <li>Backup automatico nel cloud</li>
+                                                <li>Funziona da PC, telefono, tablet</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                ` : `
+                                    <div class="card bg-light mb-3">
+                                        <div class="card-body">
+                                            <h5>📍 Per attivare la sincronizzazione live:</h5>
+                                            <ol>
+                                                <li>Vai su <a href="https://jsonbin.io" target="_blank" class="alert-link">jsonbin.io</a> e registrati (gratis)</li>
+                                                <li>Crea un nuovo "Bin" privato</li>
+                                                <li>Copia il Bin ID e la tua API Key</li>
+                                                <li>Nel codice, sostituisci "YOUR_BIN_ID" e "YOUR_API_KEY"</li>
+                                                <li>Salva su GitHub - sincronizzazione attiva!</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                `}
+                                
+                                <div class="alert alert-info mb-0">
+                                    <strong>
+                                        ${isCloudConfigured ? '🔄 Status: Controllando aggiornamenti ogni 5 secondi...' : '💾 Status: Solo localStorage (locale al dispositivo)'}
+                                    </strong>
+                                    ${state.lastSync ? `<br><small>Ultimo aggiornamento: ${state.lastSync.toLocaleString('it-IT')}</small>` : ''}
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-info">
+                                <h4 class="alert-heading">🔧 Come Aggiungere Clienti</h4>
+                                <div class="card bg-light mb-3">
+                                    <div class="card-body">
+                                        <h5>1. Modifica il file su GitHub:</h5>
+                                        <p>Vai nel repository → clicca <code>index.html</code> → clicca l'icona ✏️ Edit</p>
+                                        
+                                        <h5>2. Cerca: <code>AUTHORIZED_CLIENTS</code></h5>
+                                        
+                                        <h5>3. Aggiungi i clienti così:</h5>
+                                        <pre class="bg-success text-white p-3 rounded"><code>const AUTHORIZED_CLIENTS = [
+    'marius simiras', // Admin
+    'mario rossi',
+    'giulia bianchi',
+    'luca verdi',
+];</code></pre>
+                                        
+                                        <h5>4. Salva con "Commit changes"</h5>
+                                    </div>
+                                </div>
+                                
+                                <div class="alert alert-success mb-0">
+                                    <h5>✅ Vantaggi:</h5>
+                                    <ul class="mb-0">
+                                        <li>I clienti si sincronizzano <strong>automaticamente</strong> su tutti i dispositivi</li>
+                                        <li>Accesso <strong>immediato</strong> da PC e telefono</li>
+                                        <li>Non si perdono mai i dati</li>
+                                        <li>Backup automatico su GitHub</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <h3 class="mb-3">📋 Clienti Autorizzati Attuali (${AUTHORIZED_CLIENTS.length})</h3>
+                            
+                            ${AUTHORIZED_CLIENTS.length <= 1 ? `
+                                <div class="text-center p-5 border border-2 border-dashed rounded">
+                                    <div style="font-size: 3rem;">👥</div>
+                                    <h4>Nessun cliente aggiunto ancora</h4>
+                                    <p class="text-muted">Segui le istruzioni sopra per aggiungere i primi clienti</p>
+                                </div>
+                            ` : `
+                                <div class="row g-3">
+                                    ${AUTHORIZED_CLIENTS.map(clientName => {
+                                        if (clientName === 'marius simiras') {
+                                            return `
+                                                <div class="col-12">
+                                                    <div class="card border-warning bg-warning bg-opacity-10">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title text-warning">👑 Marius Simiras</h5>
+                                                            <span class="badge bg-warning">ADMIN</span>
+                                                            <p class="card-text mt-2 mb-0">Amministratore del sistema</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `;
+                                        } else {
+                                            const parts = clientName.split(' ');
+                                            const nome = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+                                            const cognome = parts.slice(1).join(' ').charAt(0).toUpperCase() + parts.slice(1).join(' ').slice(1);
+                                            return `
+                                                <div class="col-md-6">
+                                                    <div class="card border-success">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">👤 ${nome} ${cognome}</h5>
+                                                            <span class="badge bg-success">✅ AUTORIZZATO</span>
+                                                            <p class="card-text mt-2 mb-0">Cliente sincronizzato su tutti i dispositivi</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `;
+                                        }
+                                    }).join('')}
+                                </div>
+                            `}
+                            
+                            <div class="alert alert-warning mt-4">
+                                <h5>⚠️ Importante:</h5>
+                                <p class="mb-0">
+                                    Per rimuovere clienti, cancella la riga corrispondente dal codice e salva su GitHub.
+                                    <strong>Non rimuovere mai 'marius simiras'</strong> per mantenere l'accesso admin.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTabContent() {
+            switch (state.activeTab) {
+                case 'alimenti':
+                    return `
+                        <div class="container-fluid">
+                            ${renderSearch()}
+                            ${renderCategoryFilter()}
+                            ${renderAdminControls()}
+                            ${renderAddForm()}
+                            ${renderFoodList()}
+                        </div>
+                    `;
+                case 'clienti':
+                    return renderClientManagement();
+                default:
+                    return '';
+            }
+        }
+
+        // ==================== MAIN RENDER FUNCTION ====================
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (!state.isLoggedIn) {
+                app.innerHTML = renderLoginScreen();
+                return;
+            }
+            
+            app.innerHTML = `
+                ${renderNavbar()}
+                ${renderTabNavigation()}
+                <main class="flex-grow-1 py-4">
+                    ${renderTabContent()}
+                </main>
+            `;
+        }
+
+        // ==================== INITIALIZATION ====================
+        function init() {
+            state.isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            // Attiva ottimizzazioni specifiche Android
+            handleAndroidKeyboard();
+            
+            // Network status
+            window.addEventListener('online', () => {
+                state.isOnline = true;
+                console.log('🌐 Connessione ripristinata');
+                loadFromCloud();
+                startSyncInterval();
+                render();
+            });
+            
+            window.addEventListener('offline', () => {
+                state.isOnline = false;
+                console.log('📵 Connessione persa - modalità offline');
+                stopSyncInterval();
+                render();
+            });
+            
+            window.addEventListener('beforeunload', () => {
+                stopSyncInterval();
+            });
+            
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden && state.isOnline) {
+                    checkForUpdates();
+                }
+            });
+            
+            window.addEventListener('resize', () => {
+                state.isMobile = window.innerWidth <= 768;
+                render();
+            });
+            
+            // Load data
+            loadFromCloud().then(() => {
+                const savedUser = localStorage.getItem('nutriCitUser');
+                if (savedUser) {
+                    try {
+                        const userData = JSON.parse(savedUser);
+                        if (isAuthorizedClient(userData)) {
+                            state.currentUser = userData;
+                            state.isLoggedIn = true;
+                            
+                            if (state.isOnline) {
+                                startSyncInterval();
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Errore:', error);
+                    }
+                }
+                
+                render();
+            });
+        }
+
+        // Global functions
+        window.handleLogin = handleLogin;
+        window.handleLogout = handleLogout;
+        window.handleSearchInput = handleSearchInput;
+        window.clearSearch = clearSearch;
+        window.renderFoodListOnly = renderFoodListOnly;
+        window.handleCategoryChange = handleCategoryChange;
+        window.toggleExpanded = toggleExpanded;
+        window.startEdit = startEdit;
+        window.cancelEdit = cancelEdit;
+        window.saveEdit = saveEdit;
+        window.addNewFood = addNewFood;
+        window.deleteFood = deleteFood;
+        window.resetData = resetData;
+        window.manualSync = manualSync;
+        window.render = render;
+        window.state = state;
+
+        // Start the app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
